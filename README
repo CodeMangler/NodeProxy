@@ -1,1 +1,1 @@
-nodejs sample application.
+A HTTP Proxy for node.js, pre-configured to be hosted on fluxflex (http://fluxflex.com) [fluxflex configurations from sowawa/node_sample]
