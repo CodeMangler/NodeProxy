@@ -43,14 +43,26 @@ var proxy = http.createServer(function(req, res) {
 			method: req.method
 		};
 		console.log(requestOptions);
-		http.request(requestOptions, function(proxyRes) {
-			console.log('Making a request to: ' + req.url);
+		var proxyRequest = http.request(requestOptions, function(proxyRes) {
 			// write the received content back to user, rewriting as neccessary
 			res.writeHead(proxyRes.statusCode, proxyRes.headers);
 			proxyRes.on('data', function(chunk) { res.write(chunk); });
 			proxyRes.on('end', function() { res.end(); });
 		});
+		
+		req.on('data', function(chunk) { req.write(chunk); });
+		req.on('end', function() { req.end(); });
+		
+		proxyRequest.on('error', function(e) {
+			console.log(e.message);
+			console.log(util.inspect(e));
+		});
 	}
+});
+
+proxy.on('error', function(e) {
+	console.log(e.message);
+	console.log(util.inspect(e));
 });
 
 // bare node.js deployment
