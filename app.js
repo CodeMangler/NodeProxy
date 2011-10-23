@@ -1,4 +1,4 @@
-var // fcgiApp = require("./fcgi"),
+var fcgiApp = require("./fcgi"),
 	http = require("http"),
 	fs = require('fs'),
 	path = require('path'),
@@ -38,11 +38,11 @@ var proxy = http.createServer(function(req, res) {
 		// make a request to the url, replicating headers + method
 		var requestOptions = {
 			host: parsedRequestUrl.host,
-			port: 80, // Replace with a protocol:port map lookup
+			port: 80,
 			path: value(parsedRequestUrl.pathname, '/') + value(parsedRequestUrl.search, '') + value(parsedRequestUrl.hash, ''),
 			method: req.method
 		};
-		console.log(requestOptions);
+
 		var proxyRequest = http.request(requestOptions, function(proxyRes) {
 			// write the received content back to user, rewriting as neccessary
 			res.writeHead(proxyRes.statusCode, proxyRes.headers);
@@ -50,8 +50,8 @@ var proxy = http.createServer(function(req, res) {
 			proxyRes.on('end', function() { res.end(); });
 		});
 		
-		req.on('data', function(chunk) { req.write(chunk); });
-		req.on('end', function() { req.end(); });
+		req.on('data', function(chunk) { proxyRequest.write(chunk); });
+		req.on('end', function() { proxyRequest.end(); });
 		
 		proxyRequest.on('error', function(e) {
 			console.log(e.message);
@@ -66,7 +66,7 @@ proxy.on('error', function(e) {
 });
 
 // bare node.js deployment
-proxy.listen(12345);
+// proxy.listen(12345);
 
 // fluxflex deployment
-// fcgiApp.handle(proxy);
+fcgiApp.handle(proxy);
