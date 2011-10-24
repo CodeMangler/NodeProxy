@@ -1,0 +1,1 @@
+require('./nodeproxy').proxy.listen(12345);

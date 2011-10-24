@@ -1,5 +1,4 @@
-var fcgiApp = require("./fcgi"),
-	http = require("http"),
+var http = require("http"),
 	fs = require('fs'),
 	path = require('path'),
 	url = require('url'),
@@ -65,8 +64,4 @@ proxy.on('error', function(e) {
 	console.log(util.inspect(e));
 });
 
-// bare node.js deployment
-// proxy.listen(12345);
-
-// fluxflex deployment
-fcgiApp.handle(proxy);
+exports.proxy = proxy;
